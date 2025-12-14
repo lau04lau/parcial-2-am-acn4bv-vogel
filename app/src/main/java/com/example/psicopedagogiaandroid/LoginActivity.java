@@ -10,6 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
@@ -17,7 +20,6 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LOGIN_FIREBASE";
 
     private FirebaseAuth auth;
-
     private TextInputLayout tilEmail;
     private TextInputLayout tilPassword;
 
@@ -38,13 +40,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         FirebaseUser user = auth.getCurrentUser();
         if (user != null) {
-            Log.d(TAG, "Sesion activa: " + user.getEmail());
             irAHome();
-        } else {
-            Log.d(TAG, "No hay sesion activa");
         }
     }
 
@@ -62,7 +60,6 @@ public class LoginActivity extends AppCompatActivity {
 
         if (TextUtils.isEmpty(email)) {
             tilEmail.setError("Ingresá el email");
-            Log.w(TAG, "Email vacío");
             return;
         } else {
             tilEmail.setError(null);
@@ -70,23 +67,26 @@ public class LoginActivity extends AppCompatActivity {
 
         if (TextUtils.isEmpty(password)) {
             tilPassword.setError("Ingresá la contraseña");
-            Log.w(TAG, "Contraseña vacía");
             return;
         } else {
             tilPassword.setError(null);
         }
 
-        Log.d(TAG, "Intentando login con: " + email);
-
         auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
-                    Log.d(TAG, "Login correcto");
                     Toast.makeText(this, "Ingreso exitoso", Toast.LENGTH_SHORT).show();
                     irAHome();
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error login: " + e.getMessage());
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    String mensaje;
+                    if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                        mensaje = "La contraseña es incorrecta";
+                    } else if (e instanceof FirebaseAuthInvalidUserException) {
+                        mensaje = "No existe una cuenta con ese email";
+                    } else {
+                        mensaje = "Error al iniciar sesión. Intentá nuevamente";
+                    }
+                    Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show();
                 });
     }
 
@@ -104,21 +104,22 @@ public class LoginActivity extends AppCompatActivity {
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
             Toast.makeText(this, "Completá email y contraseña", Toast.LENGTH_SHORT).show();
-            Log.w(TAG, "Registro con datos incompletos");
             return;
         }
 
-        Log.d(TAG, "Intentando registro con: " + email);
-
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
-                    Log.d(TAG, "Registro correcto");
                     Toast.makeText(this, "Cuenta creada", Toast.LENGTH_SHORT).show();
                     irAHome();
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error registro: " + e.getMessage());
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    String mensaje;
+                    if (e instanceof FirebaseAuthUserCollisionException) {
+                        mensaje = "Ese email ya está registrado";
+                    } else {
+                        mensaje = "Error al crear la cuenta. Intentá nuevamente";
+                    }
+                    Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show();
                 });
     }
 
@@ -126,5 +127,4 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
-
 }

@@ -2,6 +2,7 @@ package com.example.psicopedagogiaandroid;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -9,28 +10,36 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class ListaPacientesActivity extends AppCompatActivity {
 
+    private static final String TAG = "LISTA_PACIENTES";
+
     private ArrayList<Paciente> pacientes;
     private ArrayList<Historial> historial;
+
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_pacientes);
 
+        db = FirebaseFirestore.getInstance();
+
         Intent intent = getIntent();
         pacientes = (ArrayList<Paciente>) intent.getSerializableExtra("pacientes");
         historial = (ArrayList<Historial>) intent.getSerializableExtra("historial");
 
-        if (pacientes == null) {
-            pacientes = new ArrayList<>();
-        }
-        if (historial == null) {
-            historial = new ArrayList<>();
-        }
+        if (pacientes == null) pacientes = new ArrayList<>();
+        if (historial == null) historial = new ArrayList<>();
 
         ImageButton btnAdd = findViewById(R.id.btnAddPatient);
         btnAdd.setOnClickListener(v -> {
@@ -40,7 +49,59 @@ public class ListaPacientesActivity extends AppCompatActivity {
             finish();
         });
 
-        renderTabla();
+        cargarPacientesDesdeFirestore();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cargarPacientesDesdeFirestore();
+    }
+
+    private void cargarPacientesDesdeFirestore() {
+        db.collection("pacientes")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    pacientes.clear();
+
+                    for (QueryDocumentSnapshot doc : snapshot) {
+                        Paciente p = new Paciente();
+
+                        String dni = doc.getString("dni");
+                        String nombre = doc.getString("nombre");
+                        String apellido = doc.getString("apellido");
+                        String telefono = doc.getString("telefono");
+                        Date fechaNac = doc.getDate("fechaNac");
+                        String motivo = doc.getString("motivoConsulta");
+                        String nivel = doc.getString("nivelEducativo");
+
+                        Long gradoLong = doc.getLong("gradoCurso");
+                        int grado = gradoLong != null ? gradoLong.intValue() : 0;
+
+                        try { if (nombre != null) p.setNombre(nombre); else p.setNombre("No informado"); } catch (Exception ignored) {}
+                        try { if (apellido != null) p.setApellido(apellido); else p.setApellido("No informado"); } catch (Exception ignored) {}
+                        try {
+                            if (dni != null) p.setDni(dni);
+                            else p.setDni(doc.getId());
+                        } catch (Exception e) {
+                            try { p.setDni("0000000"); } catch (Exception ignored) {}
+                        }
+                        try { if (telefono != null) p.setTelefono(telefono); else p.setTelefono("000000"); } catch (Exception ignored) {}
+                        try { p.setFechaNac(fechaNac); } catch (Exception ignored) {}
+                        try { p.setMotivoConsulta(motivo != null ? motivo : ""); } catch (Exception ignored) {}
+                        try { p.setGradoCurso(grado); } catch (Exception ignored) {}
+                        try { if (nivel != null) p.setNivelEducativo(nivel); else p.setNivelEducativo("Inicial"); } catch (Exception ignored) {}
+
+                        pacientes.add(p);
+                    }
+
+                    Log.d(TAG, "Pacientes cargados: " + pacientes.size());
+                    renderTabla();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error leyendo pacientes: " + e.getMessage());
+                    renderTabla();
+                });
     }
 
     private void renderTabla() {

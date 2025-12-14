@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,6 +24,8 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class cargarPacienteActivity extends AppCompatActivity {
+
+    private static final String TAG = "CARGAR_PACIENTE";
 
     private EditText nombre, apellido, dni, telefono, motivoconsulta, fechaNac;
     private AutoCompleteTextView nivelEdu, curso;
@@ -32,10 +37,14 @@ public class cargarPacienteActivity extends AppCompatActivity {
     private Paciente pacienteEditar;
     private Button btnAgregar;
 
+    private FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cargar_paciente);
+
+        db = FirebaseFirestore.getInstance();
 
         pacientes = (ArrayList<Paciente>) getIntent().getSerializableExtra("pacientes");
         if (pacientes == null) pacientes = new ArrayList<>();
@@ -216,7 +225,25 @@ public class cargarPacienteActivity extends AppCompatActivity {
             pacientes.add(p);
         }
 
-        volverALista();
+        btnAgregar.setEnabled(false);
+
+        String pacienteId = p.getDni();
+
+        db.collection("pacientes")
+                .document(pacienteId)
+                .set(PacienteMapper.toMap(p))
+                .addOnSuccessListener(unused -> {
+                    Log.d(TAG, "Paciente guardado en Firestore: " + pacienteId);
+                    btnAgregar.setEnabled(true);
+                    volverALista();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error guardando paciente: " + e.getMessage());
+                    btnAgregar.setEnabled(true);
+                    ArrayList<String> errs = new ArrayList<>();
+                    errs.add("No se pudo guardar en la nube. Revisá tu conexión e intentá de nuevo.");
+                    mostrarAlertaErrores(errs);
+                });
     }
 
     private void volverALista() {

@@ -46,7 +46,9 @@
             app:boxCornerRadiusTopStart="@dimen/button_radius"
             app:boxCornerRadiusTopEnd="@dimen/button_radius"
             app:boxCornerRadiusBottomStart="@dimen/button_radius"
-            app:boxCornerRadiusBottomEnd="@dimen/button_radius">
+            app:boxCornerRadiusBottomEnd="@dimen/button_radius"
+            app:errorEnabled="true"
+            app:errorTextColor="@color/error_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
@@ -67,7 +69,9 @@
             app:boxCornerRadiusTopStart="@dimen/button_radius"
             app:boxCornerRadiusTopEnd="@dimen/button_radius"
             app:boxCornerRadiusBottomStart="@dimen/button_radius"
-            app:boxCornerRadiusBottomEnd="@dimen/button_radius">
+            app:boxCornerRadiusBottomEnd="@dimen/button_radius"
+            app:errorEnabled="true"
+            app:errorTextColor="@color/error_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPassword"

@@ -3,10 +3,14 @@ package com.example.psicopedagogiaandroid;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,10 +18,14 @@ import java.util.Locale;
 
 public class DetalleHistorialActivity extends AppCompatActivity {
 
+    private static final String TAG = "DETALLE_HISTORIAL";
+
     private Historial historialItem;
     private ArrayList<Historial> historial;
     private ArrayList<Paciente> pacientes;
     private int indice;
+
+    private FirebaseFirestore db;
 
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
@@ -26,17 +34,15 @@ public class DetalleHistorialActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_historial);
 
+        db = FirebaseFirestore.getInstance();
+
         historialItem = (Historial) getIntent().getSerializableExtra("historialItem");
         historial = (ArrayList<Historial>) getIntent().getSerializableExtra("historial");
         pacientes = (ArrayList<Paciente>) getIntent().getSerializableExtra("pacientes");
         indice = getIntent().getIntExtra("indice", -1);
 
-        if (historial == null) {
-            historial = new ArrayList<>();
-        }
-        if (pacientes == null) {
-            pacientes = new ArrayList<>();
-        }
+        if (historial == null) historial = new ArrayList<>();
+        if (pacientes == null) pacientes = new ArrayList<>();
 
         TextView dhPaciente = findViewById(R.id.dhPaciente);
         TextView dhFecha = findViewById(R.id.dhFecha);
@@ -51,11 +57,13 @@ public class DetalleHistorialActivity extends AppCompatActivity {
         }
 
         dhPaciente.setText("Paciente: " + pacienteTxt);
+
         if (historialItem != null && historialItem.getFecha() != null) {
             dhFecha.setText("Fecha: " + sdf.format(historialItem.getFecha()));
         } else {
             dhFecha.setText("Fecha: ");
         }
+
         dhTipo.setText("Tipo: " + (historialItem != null && historialItem.getTipoRegistro() != null ? historialItem.getTipoRegistro() : ""));
         dhDesc.setText("Descripción: " + (historialItem != null && historialItem.getDescripcion() != null ? historialItem.getDescripcion() : ""));
 
@@ -78,31 +86,60 @@ public class DetalleHistorialActivity extends AppCompatActivity {
         });
 
         dhEliminar.setOnClickListener(v -> {
-            if (indice < 0 || indice >= historial.size()) {
+            if (historialItem == null) {
                 volverALista();
                 return;
             }
+
             new AlertDialog.Builder(this)
                     .setTitle("Eliminar registro")
                     .setMessage("¿Seguro que deseas eliminar este registro?")
-                    .setPositiveButton("Eliminar", (d, w) -> {
-                        Historial h = historial.get(indice);
-                        Paciente pacFiltro = h != null ? h.getPaciente() : null;
-                        historial.remove(indice);
-                        Intent i = new Intent(this, ListaHistorialActivity.class);
-                        i.putExtra("historial", historial);
-                        i.putExtra("pacientes", pacientes);
-                        if (pacFiltro != null) {
-                            i.putExtra("pacienteSeleccionado", pacFiltro);
-                        }
-                        startActivity(i);
-                        finish();
-                    })
+                    .setPositiveButton("Eliminar", (d, w) -> eliminarHistorial())
                     .setNegativeButton("Cancelar", null)
                     .show();
         });
 
         dhVolver.setOnClickListener(v -> volverALista());
+    }
+
+    private void eliminarHistorial() {
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null) {
+            mostrarError("Tenés que iniciar sesión para eliminar historiales.");
+            return;
+        }
+
+        String docId = historialItem.getId();
+        if (docId == null || docId.trim().isEmpty()) {
+            if (indice >= 0 && indice < historial.size()) {
+                historial.remove(indice);
+            }
+            volverALista();
+            return;
+        }
+
+        db.collection("historiales")
+                .document(docId)
+                .delete()
+                .addOnSuccessListener(unused -> {
+                    Log.d(TAG, "Historial eliminado: " + docId);
+                    if (indice >= 0 && indice < historial.size()) {
+                        historial.remove(indice);
+                    }
+                    volverALista();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error eliminando historial: " + e.getMessage());
+                    mostrarError("No se pudo eliminar el registro. Revisá tu conexión e intentá nuevamente.");
+                });
+    }
+
+    private void mostrarError(String msg) {
+        new AlertDialog.Builder(this)
+                .setTitle("Error")
+                .setMessage(msg)
+                .setPositiveButton("OK", null)
+                .show();
     }
 
     private void volverALista() {

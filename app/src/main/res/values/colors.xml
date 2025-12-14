@@ -7,4 +7,6 @@
     <color name="colorPrimaryLight">#edf8f9</color>
     <color name="backgroundGeneral">#f8eef6</color>
     <color name="colorAccent">#98c1d9</color>
+    <color name="error_text">#FFD1D1</color>
+
 </resources>

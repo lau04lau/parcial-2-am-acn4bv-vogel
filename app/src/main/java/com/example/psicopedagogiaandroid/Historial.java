@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class Historial implements Serializable {
 
+    private String id;
     private Paciente paciente;
     private Date fecha;
     private String tipoRegistro;
@@ -17,6 +18,14 @@ public class Historial implements Serializable {
         this.fecha = fecha;
         this.tipoRegistro = tipoRegistro;
         this.descripcion = descripcion;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Paciente getPaciente() {

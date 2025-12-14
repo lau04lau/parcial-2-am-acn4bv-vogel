@@ -3,11 +3,15 @@ package com.example.psicopedagogiaandroid;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,15 +19,21 @@ import java.util.Locale;
 
 public class DetallePacienteActivity extends AppCompatActivity {
 
+    private static final String TAG = "DETALLE_PACIENTE";
+
     private Paciente paciente;
     private ArrayList<Paciente> pacientes;
     private ArrayList<Historial> historial;
     private int indice;
 
+    private FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_paciente);
+
+        db = FirebaseFirestore.getInstance();
 
         Intent intent = getIntent();
         paciente = (Paciente) intent.getSerializableExtra("paciente");
@@ -31,12 +41,8 @@ public class DetallePacienteActivity extends AppCompatActivity {
         historial = (ArrayList<Historial>) intent.getSerializableExtra("historial");
         indice = intent.getIntExtra("indice", -1);
 
-        if (pacientes == null) {
-            pacientes = new ArrayList<>();
-        }
-        if (historial == null) {
-            historial = new ArrayList<>();
-        }
+        if (pacientes == null) pacientes = new ArrayList<>();
+        if (historial == null) historial = new ArrayList<>();
 
         TextView tvNombre = findViewById(R.id.tvNombre);
         TextView tvApellido = findViewById(R.id.tvApellido);
@@ -101,9 +107,7 @@ public class DetallePacienteActivity extends AppCompatActivity {
     }
 
     public void onEditar(View v) {
-        if (paciente == null) {
-            return;
-        }
+        if (paciente == null) return;
         Intent i = new Intent(this, cargarPacienteActivity.class);
         i.putExtra("pacientes", pacientes);
         i.putExtra("paciente", paciente);
@@ -113,7 +117,7 @@ public class DetallePacienteActivity extends AppCompatActivity {
     }
 
     public void onEliminar(View v) {
-        if (paciente == null || pacientes == null) {
+        if (paciente == null) {
             volverALista();
             return;
         }
@@ -121,22 +125,60 @@ public class DetallePacienteActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Eliminar paciente")
                 .setMessage("¿Deseás eliminar a este paciente?")
-                .setPositiveButton("Eliminar", (dialog, which) -> {
-                    String dniPaciente = paciente.getDni();
-                    if (dniPaciente != null) {
-                        for (int i = 0; i < pacientes.size(); i++) {
-                            Paciente p = pacientes.get(i);
-                            if (p != null && dniPaciente.equals(p.getDni())) {
-                                pacientes.remove(i);
-                                break;
-                            }
-                        }
-                    } else if (indice >= 0 && indice < pacientes.size()) {
-                        pacientes.remove(indice);
-                    }
-                    volverALista();
-                })
+                .setPositiveButton("Eliminar", (dialog, which) -> eliminarPacienteEnFirestore())
                 .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void eliminarPacienteEnFirestore() {
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null) {
+            mostrarError("Tenés que iniciar sesión para eliminar pacientes.");
+            return;
+        }
+
+        String dniPaciente = paciente.getDni();
+        if (dniPaciente == null || dniPaciente.trim().isEmpty()) {
+            eliminarLocalYVolver();
+            return;
+        }
+
+        db.collection("pacientes")
+                .document(dniPaciente.trim())
+                .delete()
+                .addOnSuccessListener(unused -> {
+                    Log.d(TAG, "Paciente eliminado: " + dniPaciente);
+                    eliminarLocalYVolver();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error eliminando paciente: " + e.getMessage());
+                    mostrarError("No se pudo eliminar el paciente. Revisá tu conexión e intentá nuevamente.");
+                });
+    }
+
+    private void eliminarLocalYVolver() {
+        if (pacientes != null && paciente != null) {
+            String dniPaciente = paciente.getDni();
+            if (dniPaciente != null) {
+                for (int i = 0; i < pacientes.size(); i++) {
+                    Paciente p = pacientes.get(i);
+                    if (p != null && dniPaciente.equals(p.getDni())) {
+                        pacientes.remove(i);
+                        break;
+                    }
+                }
+            } else if (indice >= 0 && indice < pacientes.size()) {
+                pacientes.remove(indice);
+            }
+        }
+        volverALista();
+    }
+
+    private void mostrarError(String msg) {
+        new AlertDialog.Builder(this)
+                .setTitle("Error")
+                .setMessage(msg)
+                .setPositiveButton("OK", null)
                 .show();
     }
 }

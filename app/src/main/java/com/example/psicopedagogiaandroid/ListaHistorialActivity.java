@@ -3,6 +3,7 @@ package com.example.psicopedagogiaandroid;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
@@ -11,21 +12,33 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 public class ListaHistorialActivity extends AppCompatActivity {
 
+    private static final String TAG = "LISTA_HISTORIAL";
+
     private ArrayList<Historial> historial;
     private ArrayList<Paciente> pacientes;
     private Paciente pacienteSeleccionado;
+
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_historial);
+
+        db = FirebaseFirestore.getInstance();
 
         Intent intent = getIntent();
         historial = (ArrayList<Historial>) intent.getSerializableExtra("historial");
@@ -47,17 +60,57 @@ public class ListaHistorialActivity extends AppCompatActivity {
         ImageButton btnAtras = findViewById(R.id.btnAtrasHistorial);
         btnAtras.setOnClickListener(v -> volverADetalle());
 
-        renderTabla();
+        cargarHistorialDesdeFirestore();
     }
 
-    private boolean coincidePaciente(Historial h) {
-        if (pacienteSeleccionado == null) return true;
-        if (h.getPaciente() == null) return false;
-
-        String dniSel = pacienteSeleccionado.getDni() != null ? pacienteSeleccionado.getDni() : "";
-        String dniHist = h.getPaciente().getDni() != null ? h.getPaciente().getDni() : "";
-        return dniSel.equals(dniHist);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cargarHistorialDesdeFirestore();
     }
+
+    private void cargarHistorialDesdeFirestore() {
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null) {
+            historial.clear();
+            renderTabla();
+            return;
+        }
+
+        if (pacienteSeleccionado == null || pacienteSeleccionado.getDni() == null || pacienteSeleccionado.getDni().trim().isEmpty()) {
+            historial.clear();
+            renderTabla();
+            return;
+        }
+
+        String pacienteId = pacienteSeleccionado.getDni().trim();
+
+        db.collection("historiales")
+                .whereEqualTo("pacienteId", pacienteId)
+                .whereEqualTo("terapeutaUid", uid)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    historial.clear();
+
+                    for (QueryDocumentSnapshot doc : snapshot) {
+                        Date fecha = doc.getDate("fecha");
+                        String tipo = doc.getString("tipoRegistro");
+                        String desc = doc.getString("descripcion");
+
+                        Historial h = new Historial(pacienteSeleccionado, fecha, tipo, desc);
+                        h.setId(doc.getId());
+                        historial.add(h);
+                    }
+
+                    renderTabla();
+                })
+                .addOnFailureListener(e -> {
+                    historial.clear();
+                    renderTabla();
+                });
+    }
+
+
 
     private void renderTabla() {
         TableLayout table = findViewById(R.id.tableHistorial);
@@ -78,22 +131,19 @@ public class ListaHistorialActivity extends AppCompatActivity {
             tv.setTextColor(colorTexto);
             tv.setPadding(8, 8, 8, 8);
             tv.setGravity(Gravity.CENTER);
-            tv.setLayoutParams(new TableRow.LayoutParams(
-                    0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            tv.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
             header.addView(tv);
         }
 
         table.addView(header);
 
         android.view.View headerDivider = new android.view.View(this);
-        headerDivider.setLayoutParams(new TableRow.LayoutParams(
-                TableRow.LayoutParams.MATCH_PARENT, 1));
+        headerDivider.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, 1));
         headerDivider.setBackgroundColor(colorBorde);
         table.addView(headerDivider);
 
         for (int i = 0; i < historial.size(); i++) {
             Historial h = historial.get(i);
-            if (!coincidePaciente(h)) continue;
 
             TableRow row = new TableRow(this);
             row.setBackgroundColor(colorFondo);
@@ -117,8 +167,7 @@ public class ListaHistorialActivity extends AppCompatActivity {
                 tv.setTextColor(colorTexto);
                 tv.setPadding(8, 8, 8, 8);
                 tv.setGravity(Gravity.CENTER);
-                tv.setLayoutParams(new TableRow.LayoutParams(
-                        0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                tv.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
                 row.addView(tv);
 
                 if (c == 0) {
@@ -129,15 +178,14 @@ public class ListaHistorialActivity extends AppCompatActivity {
                         d.putExtra("historialItem", historial.get(index));
                         d.putExtra("indice", index);
                         d.putExtra("pacientes", pacientes);
+                        d.putExtra("pacienteSeleccionado", pacienteSeleccionado);
                         startActivity(d);
-                        finish();
                     });
                 }
             }
 
             android.view.View divider = new android.view.View(this);
-            divider.setLayoutParams(new TableRow.LayoutParams(
-                    TableRow.LayoutParams.MATCH_PARENT, 1));
+            divider.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, 1));
             divider.setBackgroundColor(colorBorde);
 
             table.addView(row);
