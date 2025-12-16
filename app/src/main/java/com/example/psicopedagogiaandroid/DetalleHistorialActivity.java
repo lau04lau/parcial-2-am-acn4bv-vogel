@@ -7,8 +7,6 @@ import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -16,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class DetalleHistorialActivity extends AppCompatActivity {
+public class DetalleHistorialActivity extends BaseActivity {
 
     private static final String TAG = "DETALLE_HISTORIAL";
 
@@ -33,6 +31,9 @@ public class DetalleHistorialActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_historial);
+
+        // HEADER: muestra email + logout
+        setupHeaderUsuario();
 
         db = FirebaseFirestore.getInstance();
 
@@ -100,6 +101,12 @@ public class DetalleHistorialActivity extends AppCompatActivity {
         });
 
         dhVolver.setOnClickListener(v -> volverALista());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupHeaderUsuario();
     }
 
     private void eliminarHistorial() {

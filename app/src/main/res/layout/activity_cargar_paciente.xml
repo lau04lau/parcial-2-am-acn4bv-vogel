@@ -13,17 +13,26 @@
         android:background="@color/colorPrimary"
         tools:context=".cargarPacienteActivity">
 
+        <!-- HEADER (muestra el email con tvUsuarioEmail) -->
+        <include
+            android:id="@+id/includeHeaderUsuario"
+            layout="@layout/view_header_usuario"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Back dentro del header -->
         <ImageButton
             android:id="@+id/btnBack"
             android:layout_width="@dimen/icon_l"
             android:layout_height="@dimen/icon_l"
             android:layout_marginStart="@dimen/margin_l"
-            android:layout_marginTop="@dimen/margin_l"
             android:background="@android:color/transparent"
             android:contentDescription="@string/atrasBtnText"
             android:scaleType="fitCenter"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/includeHeaderUsuario"
+            app:layout_constraintBottom_toBottomOf="@id/includeHeaderUsuario"
             app:tint="@color/white"
             app:srcCompat="@drawable/atras" />
 
@@ -36,28 +45,28 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnBack"
+            app:layout_constraintTop_toBottomOf="@id/includeHeaderUsuario"
             app:layout_constraintWidth_max="600dp">
 
             <LinearLayout
                 android:id="@+id/headerContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
                 android:layout_marginBottom="@dimen/margin_xl"
+                android:gravity="center"
+                android:orientation="horizontal"
                 android:paddingVertical="@dimen/padding_l">
 
                 <TextView
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_m"
                     android:text="@string/agregar_paciente"
                     android:textAllCaps="true"
                     android:textColor="@color/colorPrimaryLight"
                     android:textSize="@dimen/title_text"
-                    android:textStyle="bold"
-                    android:layout_marginEnd="@dimen/margin_m" />
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/imageView2"
@@ -66,6 +75,8 @@
                     app:srcCompat="@drawable/icono"
                     app:tint="@color/white" />
             </LinearLayout>
+
+            <!-- (todo lo demás queda igual) -->
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -178,14 +189,14 @@
                     style="@style/EditTextCursorColor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_m"
-                    android:minHeight="@dimen/input_height"
-                    android:popupBackground="@color/colorPrimary"
-                    android:textColor="@color/colorPrimaryLight"
-                    android:textColorHint="@color/colorPrimaryLight"
+                    android:cursorVisible="false"
                     android:focusable="false"
                     android:inputType="none"
-                    android:cursorVisible="false" />
+                    android:minHeight="@dimen/input_height"
+                    android:padding="@dimen/padding_m"
+                    android:popupBackground="@color/colorPrimary"
+                    android:textColor="@color/colorPrimaryLight"
+                    android:textColorHint="@color/colorPrimaryLight" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -205,14 +216,14 @@
                     style="@style/EditTextCursorColor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_m"
-                    android:minHeight="@dimen/input_height"
-                    android:popupBackground="@color/colorPrimary"
-                    android:textColor="@color/colorPrimaryLight"
-                    android:textColorHint="@color/colorPrimaryLight"
+                    android:cursorVisible="false"
                     android:focusable="false"
                     android:inputType="none"
-                    android:cursorVisible="false" />
+                    android:minHeight="@dimen/input_height"
+                    android:padding="@dimen/padding_m"
+                    android:popupBackground="@color/colorPrimary"
+                    android:textColor="@color/colorPrimaryLight"
+                    android:textColorHint="@color/colorPrimaryLight" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -237,12 +248,13 @@
                 android:id="@+id/btnAgregar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_xl"
                 android:backgroundTint="@color/colorPrimary"
                 android:minHeight="@dimen/button_height"
                 android:text="@string/agregar"
-                android:textColor="@color/colorAccent"
-                android:layout_marginTop="@dimen/margin_xl" />
+                android:textColor="@color/colorAccent" />
 
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

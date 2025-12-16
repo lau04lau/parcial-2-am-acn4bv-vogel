@@ -1,47 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     android:background="@color/colorPrimary">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/margin_l">
+    <!-- HEADER (muestra el email con tvUsuarioEmail) -->
+    <include
+        android:id="@+id/includeHeaderUsuario"
+        layout="@layout/view_header_usuario"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <ScrollView
+        android:id="@+id/scrollListaPacientes"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/includeHeaderUsuario"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-            <TextView
-                android:id="@+id/tvListadoTitulo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/listadoPacientesText"
-                android:textColor="@color/colorPrimaryLight"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_title"
-                android:layout_centerHorizontal="true"/>
-
-            <ImageButton
-                android:id="@+id/btnAddPatient"
-                android:layout_width="@dimen/icon_m"
-                android:layout_height="@dimen/icon_m"
-                android:layout_alignParentEnd="true"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/agregarPacienteDescripcion"
-                android:src="@drawable/icono"
-                android:scaleType="centerInside"
-                app:tint="@color/white"/>
-        </RelativeLayout>
-
-        <TableLayout
-            android:id="@+id/tablePacientes"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_l" />
-    </LinearLayout>
-</ScrollView>
+            android:orientation="vertical"
+            android:padding="@dimen/margin_l">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvListadoTitulo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/listadoPacientesText"
+                    android:textColor="@color/colorPrimaryLight"
+                    android:textSize="@dimen/text_title"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/btnAddPatient"
+                    android:layout_width="@dimen/icon_m"
+                    android:layout_height="@dimen/icon_m"
+                    android:layout_alignParentEnd="true"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/agregarPacienteDescripcion"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/icono"
+                    app:tint="@color/white" />
+            </RelativeLayout>
+
+            <TableLayout
+                android:id="@+id/tablePacientes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_l" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

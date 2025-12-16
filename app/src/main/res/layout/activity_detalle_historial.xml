@@ -7,12 +7,19 @@
     android:background="@color/backgroundGeneral"
     tools:context=".DetalleHistorialActivity">
 
+    <include
+        android:id="@+id/includeHeaderUsuario"
+        layout="@layout/view_header_usuario"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <ScrollView
         android:id="@+id/scrollDetalleHistorial"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="@dimen/margin_xl"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/includeHeaderUsuario"
         app:layout_constraintBottom_toTopOf="@+id/contenedorBotones"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -26,34 +33,34 @@
                 android:id="@+id/dhPaciente"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_m"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/text_subtitle"
-                android:textStyle="bold"
-                android:layout_marginBottom="@dimen/margin_m" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/dhFecha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_m"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_normal"
-                android:layout_marginBottom="@dimen/margin_m" />
+                android:textSize="@dimen/text_normal" />
 
             <TextView
                 android:id="@+id/dhTipo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_m"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_normal"
-                android:layout_marginBottom="@dimen/margin_m" />
+                android:textSize="@dimen/text_normal" />
 
             <TextView
                 android:id="@+id/dhDescripcion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_m"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_normal"
-                android:layout_marginBottom="@dimen/margin_m" />
+                android:textSize="@dimen/text_normal" />
 
         </LinearLayout>
     </ScrollView>
@@ -62,9 +69,9 @@
         android:id="@+id/contenedorBotones"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
         android:layout_marginBottom="@dimen/detail_buttons_margin_bottom"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -73,40 +80,40 @@
             android:id="@+id/dhEditar"
             android:layout_width="@dimen/detail_buttons_icon_size"
             android:layout_height="@dimen/detail_buttons_icon_size"
-            android:background="@android:color/transparent"
-            android:src="@drawable/editardoc"
-            android:contentDescription="@string/editarDescripcion"
-            app:tint="@color/colorPrimary"
+            android:layout_marginHorizontal="@dimen/margin_m"
             android:adjustViewBounds="true"
-            android:scaleType="centerInside"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/editarDescripcion"
             android:padding="@dimen/padding_xs"
-            android:layout_marginHorizontal="@dimen/margin_m" />
+            android:scaleType="centerInside"
+            android:src="@drawable/editardoc"
+            app:tint="@color/colorPrimary" />
 
         <ImageButton
             android:id="@+id/dhEliminar"
             android:layout_width="@dimen/detail_buttons_icon_size"
             android:layout_height="@dimen/detail_buttons_icon_size"
-            android:background="@android:color/transparent"
-            android:src="@drawable/eliminardoc"
-            android:contentDescription="@string/eliminarDescripcion"
-            app:tint="@color/colorPrimary"
+            android:layout_marginHorizontal="@dimen/margin_m"
             android:adjustViewBounds="true"
-            android:scaleType="centerInside"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/eliminarDescripcion"
             android:padding="@dimen/padding_xs"
-            android:layout_marginHorizontal="@dimen/margin_m" />
+            android:scaleType="centerInside"
+            android:src="@drawable/eliminardoc"
+            app:tint="@color/colorPrimary" />
 
         <ImageButton
             android:id="@+id/dhVolver"
             android:layout_width="@dimen/detail_buttons_icon_size"
             android:layout_height="@dimen/detail_buttons_icon_size"
-            android:background="@android:color/transparent"
-            android:src="@drawable/atras"
-            android:contentDescription="@string/volverDescripcion"
-            app:tint="@color/colorPrimary"
+            android:layout_marginHorizontal="@dimen/margin_m"
             android:adjustViewBounds="true"
-            android:scaleType="centerInside"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/volverDescripcion"
             android:padding="@dimen/padding_xs"
-            android:layout_marginHorizontal="@dimen/margin_m" />
+            android:scaleType="centerInside"
+            android:src="@drawable/atras"
+            app:tint="@color/colorPrimary" />
 
     </LinearLayout>
 

@@ -8,17 +8,13 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
-public class ListaPacientesActivity extends AppCompatActivity {
+public class ListaPacientesActivity extends BaseActivity {
 
     private static final String TAG = "LISTA_PACIENTES";
 
@@ -31,6 +27,9 @@ public class ListaPacientesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_pacientes);
+
+        // HEADER: muestra email + logout
+        setupHeaderUsuario();
 
         db = FirebaseFirestore.getInstance();
 
@@ -55,6 +54,7 @@ public class ListaPacientesActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setupHeaderUsuario();
         cargarPacientesDesdeFirestore();
     }
 

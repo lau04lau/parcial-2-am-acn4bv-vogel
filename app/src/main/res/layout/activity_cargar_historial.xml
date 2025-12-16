@@ -13,18 +13,27 @@
         android:background="@color/colorPrimary"
         tools:context=".CargarHistorialActivity">
 
+        <!-- HEADER (muestra el email con tvUsuarioEmail) -->
+        <include
+            android:id="@+id/includeHeaderUsuario"
+            layout="@layout/view_header_usuario"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Back alineado dentro de la franja del header -->
         <ImageButton
             android:id="@+id/btnBackHistorial"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="@dimen/margin_l"
-            android:layout_marginTop="@dimen/margin_xxl"
             android:background="@android:color/transparent"
             android:padding="@dimen/padding_s"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/includeHeaderUsuario"
+            app:layout_constraintBottom_toBottomOf="@id/includeHeaderUsuario"
             app:srcCompat="@drawable/atras"
             app:tint="@color/colorPrimaryLight" />
 
@@ -34,10 +43,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="@dimen/section_spacing"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/includeHeaderUsuario"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintWidth_max="600dp">
 
             <TextView
@@ -92,8 +101,8 @@
                     style="@style/EditTextCursorColor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_m"
                     android:minHeight="@dimen/input_height"
+                    android:padding="@dimen/padding_m"
                     android:popupBackground="@color/colorPrimary"
                     android:textColor="@color/colorPrimaryLight" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -113,8 +122,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="top|start"
-                    android:minLines="3"
                     android:inputType="textMultiLine"
+                    android:minLines="3"
                     android:textColor="@color/colorPrimaryLight"
                     android:textColorHint="@color/colorPrimaryLight" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -130,5 +139,6 @@
                 android:textColor="@color/colorAccent" />
 
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

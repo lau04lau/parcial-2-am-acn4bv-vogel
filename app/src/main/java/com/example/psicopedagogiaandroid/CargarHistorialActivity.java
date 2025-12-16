@@ -4,15 +4,12 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,7 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class CargarHistorialActivity extends AppCompatActivity {
+public class CargarHistorialActivity extends BaseActivity {
 
     private static final String TAG = "CARGAR_HISTORIAL";
 
@@ -46,6 +43,9 @@ public class CargarHistorialActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cargar_historial);
+
+        // HEADER: muestra email + logout
+        setupHeaderUsuario();
 
         db = FirebaseFirestore.getInstance();
 
@@ -95,6 +95,12 @@ public class CargarHistorialActivity extends AppCompatActivity {
 
         btnGuardar.setOnClickListener(v -> guardarHistorial(btnGuardar));
         btnBackHistorial.setOnClickListener(v -> volverAListaHistorial());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupHeaderUsuario();
     }
 
     private void mostrarDatePicker() {

@@ -44,4 +44,8 @@
     <string name="entrar">Entrar</string>
     <string name="crear_cuenta">Crear cuenta</string>
     <string name="cerrar_sesi_n">Cerrar sesión</string>
+    <string name="pregunta_cerrar_sesion">¿Deseás cerrar sesión?</string>
+    <string name="si">Sí</string>
+    <string name="no">No</string>
+    <string name="sin_sesion">Sin sesión</string>
 </resources>

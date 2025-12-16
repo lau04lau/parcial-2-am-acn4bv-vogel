@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -17,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class DetallePacienteActivity extends AppCompatActivity {
+public class DetallePacienteActivity extends BaseActivity {
 
     private static final String TAG = "DETALLE_PACIENTE";
 
@@ -32,6 +30,9 @@ public class DetallePacienteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalle_paciente);
+
+        // HEADER: muestra email + logout
+        setupHeaderUsuario();
 
         db = FirebaseFirestore.getInstance();
 
@@ -79,6 +80,12 @@ public class DetallePacienteActivity extends AppCompatActivity {
         btnEliminar.setOnClickListener(this::onEliminar);
         btnEditar.setOnClickListener(this::onEditar);
         btnHistorial.setOnClickListener(this::onVerHistorial);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupHeaderUsuario();
     }
 
     private void volverALista() {

@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundGeneral">
 
+    <!-- HEADER (muestra el email con tvUsuarioEmail) -->
+    <include
+        android:id="@+id/includeHeaderUsuario"
+        layout="@layout/view_header_usuario"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:id="@+id/scrollDetallePaciente"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/includeHeaderUsuario"
+        app:layout_constraintBottom_toTopOf="@+id/bottomButtons"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -135,17 +148,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/bottom_space_detail"
                 android:visibility="invisible" />
+
         </LinearLayout>
     </ScrollView>
 
     <LinearLayout
         android:id="@+id/bottomButtons"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_gravity="bottom"
-        android:paddingBottom="@dimen/margin_xxl">
+        android:paddingBottom="@dimen/margin_xxl"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageButton
             android:id="@+id/btnAtras"
@@ -195,4 +211,4 @@
             app:srcCompat="@drawable/historial" />
     </LinearLayout>
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

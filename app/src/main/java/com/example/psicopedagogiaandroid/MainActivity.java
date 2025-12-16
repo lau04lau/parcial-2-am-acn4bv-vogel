@@ -4,16 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MAIN_ACTIVITY";
 
@@ -29,12 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
-        Button btnLogout = findViewById(R.id.btnLogout);
-        btnLogout.setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            finish();
-        });
+        setupHeaderUsuario();
     }
 
     @Override
@@ -46,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "No hay sesión, redirigiendo a Login");
             startActivity(new Intent(this, LoginActivity.class));
             finish();
+        } else {
+            setupHeaderUsuario();
         }
     }
 

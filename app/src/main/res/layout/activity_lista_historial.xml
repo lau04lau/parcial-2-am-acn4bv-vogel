@@ -1,71 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundGeneral"
-    android:padding="@dimen/margin_l">
+    android:background="@color/backgroundGeneral">
 
+    <!-- HEADER (muestra el email con tvUsuarioEmail) -->
+    <include
+        android:id="@+id/includeHeaderUsuario"
+        layout="@layout/view_header_usuario"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Contenedor original de la pantalla -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/margin_l">
-
-        <TextView
-            android:id="@+id/tvTituloHistorial"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Historiales del Paciente"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/title_text"
-            android:textStyle="bold"
-            android:gravity="center" />
-
-        <ImageButton
-            android:id="@+id/btnAddHistorial"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@android:color/transparent"
-            android:padding="8dp"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
-            app:tint="@color/colorPrimary"
-            app:srcCompat="@drawable/agregar" />
-    </LinearLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
+        android:id="@+id/content"
+        android:orientation="vertical"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:padding="@dimen/margin_l"
+        app:layout_constraintTop_toBottomOf="@id/includeHeaderUsuario"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <TableLayout
-            android:id="@+id/tableHistorial"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stretchColumns="*" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/margin_l">
 
-    </ScrollView>
+            <TextView
+                android:id="@+id/tvTituloHistorial"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Historiales del Paciente"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/title_text"
+                android:textStyle="bold" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="start"
-        android:paddingTop="@dimen/margin_l">
+            <ImageButton
+                android:id="@+id/btnAddHistorial"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/agregar"
+                app:tint="@color/colorPrimary" />
+        </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/btnAtrasHistorial"
-            android:layout_width="58dp"
-            android:layout_height="58dp"
-            android:padding="8dp"
-            android:background="@android:color/transparent"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
-            app:tint="@color/colorPrimary"
-            app:srcCompat="@drawable/atras" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TableLayout
+                android:id="@+id/tableHistorial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="*" />
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:paddingTop="@dimen/margin_l">
+
+            <ImageButton
+                android:id="@+id/btnAtrasHistorial"
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/atras"
+                app:tint="@color/colorPrimary" />
+        </LinearLayout>
+
     </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

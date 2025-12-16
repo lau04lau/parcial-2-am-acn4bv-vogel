@@ -13,8 +13,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.lang.reflect.Field;
@@ -23,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class cargarPacienteActivity extends AppCompatActivity {
+public class cargarPacienteActivity extends BaseActivity {
 
     private static final String TAG = "CARGAR_PACIENTE";
 
@@ -43,6 +41,9 @@ public class cargarPacienteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cargar_paciente);
+
+        // HEADER: muestra email + logout
+        setupHeaderUsuario();
 
         db = FirebaseFirestore.getInstance();
 
@@ -68,10 +69,12 @@ public class cargarPacienteActivity extends AppCompatActivity {
         ArrayAdapter<String> adapterNivel = new ArrayAdapter<>(this, R.layout.spinner_item, niveles);
         adapterNivel.setDropDownViewResource(R.layout.spinner_dropdown_item);
         nivelEdu.setAdapter(adapterNivel);
+        nivelEdu.setOnClickListener(v -> nivelEdu.showDropDown());
 
         ArrayAdapter<String> adapterCurso = new ArrayAdapter<>(this, R.layout.spinner_item, cursos);
         adapterCurso.setDropDownViewResource(R.layout.spinner_dropdown_item);
         curso.setAdapter(adapterCurso);
+        curso.setOnClickListener(v -> curso.showDropDown());
 
         fechaNac.setOnClickListener(v -> mostrarDatePicker());
 
@@ -79,14 +82,20 @@ public class cargarPacienteActivity extends AppCompatActivity {
 
         if (pacienteEditar != null) {
             cargarDatosPaciente();
-            titulo.setText("EDITAR PACIENTE");
+            if (titulo != null) titulo.setText("EDITAR PACIENTE");
             btnAgregar.setText("EDITAR");
         } else {
-            titulo.setText("AGREGAR PACIENTE");
+            if (titulo != null) titulo.setText("AGREGAR PACIENTE");
             btnAgregar.setText("AGREGAR");
         }
 
         btnAgregar.setOnClickListener(v -> guardarPaciente());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupHeaderUsuario();
     }
 
     private void mostrarDatePicker() {
@@ -129,13 +138,13 @@ public class cargarPacienteActivity extends AppCompatActivity {
                 int monthId = getResources().getIdentifier("month", "id", "android");
                 int yearId = getResources().getIdentifier("year", "id", "android");
 
-                EditText day = dialog.findViewById(dayId);
-                EditText month = dialog.findViewById(monthId);
-                EditText year = dialog.findViewById(yearId);
+                EditText dayView = dialog.findViewById(dayId);
+                EditText monthView = dialog.findViewById(monthId);
+                EditText yearView = dialog.findViewById(yearId);
 
-                if (day != null) day.setTextColor(light);
-                if (month != null) month.setTextColor(light);
-                if (year != null) year.setTextColor(light);
+                if (dayView != null) dayView.setTextColor(light);
+                if (monthView != null) monthView.setTextColor(light);
+                if (yearView != null) yearView.setTextColor(light);
 
                 int headerId = getResources().getIdentifier("date_picker_header", "id", "android");
                 if (headerId != 0) {
@@ -185,9 +194,7 @@ public class cargarPacienteActivity extends AppCompatActivity {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         java.util.Date fechaParseada = null;
-        try {
-            fechaParseada = sdf.parse(f);
-        } catch (Exception ignored) {}
+        try { fechaParseada = sdf.parse(f); } catch (Exception ignored) {}
 
         Paciente p = new Paciente();
 

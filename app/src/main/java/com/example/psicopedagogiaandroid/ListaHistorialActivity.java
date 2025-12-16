@@ -3,14 +3,11 @@ package com.example.psicopedagogiaandroid;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -21,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class ListaHistorialActivity extends AppCompatActivity {
+public class ListaHistorialActivity extends BaseActivity {
 
     private static final String TAG = "LISTA_HISTORIAL";
 
@@ -37,6 +34,9 @@ public class ListaHistorialActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_historial);
+
+        // HEADER: muestra email + logout
+        setupHeaderUsuario();
 
         db = FirebaseFirestore.getInstance();
 
@@ -66,6 +66,7 @@ public class ListaHistorialActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setupHeaderUsuario();
         cargarHistorialDesdeFirestore();
     }
 
@@ -109,8 +110,6 @@ public class ListaHistorialActivity extends AppCompatActivity {
                     renderTabla();
                 });
     }
-
-
 
     private void renderTabla() {
         TableLayout table = findViewById(R.id.tableHistorial);

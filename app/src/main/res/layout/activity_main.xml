@@ -8,13 +8,20 @@
     android:background="@color/backgroundGeneral"
     tools:context=".MainActivity">
 
+    <include
+        android:id="@+id/includeHeaderUsuario"
+        layout="@layout/view_header_usuario"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="@dimen/logo_size"
         android:layout_height="@dimen/logo_size"
         android:contentDescription="@string/logo_tipo_del_proyecto"
         app:srcCompat="@drawable/logo"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/includeHeaderUsuario"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/margin_xxxl" />
@@ -48,19 +55,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/margin_l" />
-    <Button
-        android:id="@+id/btnLogout"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/button_height"
-        android:text="@string/cerrar_sesi_n"
-        android:textAllCaps="false"
-        android:backgroundTint="@color/colorAccent"
-        android:textColor="@color/colorPrimary"
-        app:rippleColor="@color/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@id/btnPacientes"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/margin_m" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
