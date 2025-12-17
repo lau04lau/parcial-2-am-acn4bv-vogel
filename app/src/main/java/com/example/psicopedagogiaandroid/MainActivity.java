@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import com.bumptech.glide.Glide;
+
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +30,12 @@ public class MainActivity extends BaseActivity {
         auth = FirebaseAuth.getInstance();
 
         setupHeaderUsuario();
+        ImageView imgPacientesIcon = findViewById(R.id.imgPacientesIcon);
+
+        Glide.with(this)
+                .load("https://img.icons8.com/ios-filled/100/3d5a80/puzzle-matching.png")
+                .into(imgPacientesIcon);
+
     }
 
     @Override

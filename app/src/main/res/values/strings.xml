@@ -48,4 +48,5 @@
     <string name="si">Sí</string>
     <string name="no">No</string>
     <string name="sin_sesion">Sin sesión</string>
+    <string name="icono_pacientes">Icono pacientes</string>
 </resources>
